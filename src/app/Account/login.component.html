@@ -1,0 +1,45 @@
+<div class="container mt-5" style="max-width: 520px;">
+	<h1 class="display-5 fw-bold text-center mb-4">Welcome</h1>
+	<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+		<div class="mb-3">
+			<label class="form-label">User name</label>
+			<input
+				name="username"
+				type="text"
+				class="form-control"
+				[(ngModel)]="model.username"
+				required
+				minlength="3"
+			/>
+			<div class="text-danger small" *ngIf="f.submitted && f.controls['username']?.errors">
+				<div *ngIf="f.controls['username']?.errors?.['required']">User name is required.</div>
+				<div *ngIf="f.controls['username']?.errors?.['minlength']">Min 3 characters.</div>
+			</div>
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">Password</label>
+			<input
+				name="password"
+				type="password"
+				class="form-control"
+				[(ngModel)]="model.password"
+				required
+				minlength="6"
+			/>
+			<div class="text-danger small" *ngIf="f.submitted && f.controls['password']?.errors">
+				<div *ngIf="f.controls['password']?.errors?.['required']">Password is required.</div>
+				<div *ngIf="f.controls['password']?.errors?.['minlength']">Min 6 characters.</div>
+			</div>
+		</div>
+
+		<button class="btn btn-primary w-100" type="submit" [disabled]="f.invalid || submitting">
+			{{ submitting ? 'Logging in…' : 'Log in' }}
+		</button>
+
+		<div class="text-center mt-3 text-muted">
+			Don’t have an account?
+			<a routerLink="/account/register">Sign up</a>
+		</div>
+	</form>
+</div>

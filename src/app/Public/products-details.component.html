@@ -1,0 +1,17 @@
+<div class="container py-3" *ngIf="product as p">
+	<div class="row">
+		<div class="col-md-6">
+			<img class="img-fluid rounded" [src]="p.imageUrl" [alt]="p.name" />
+		</div>
+		<div class="col-md-6">
+			<h2>{{ p.name }}</h2>
+			<p class="fs-5">Price: ${{ p.price | number:'1.2-2' }}</p>
+			<div class="d-flex align-items-center gap-2 my-3">
+				<button class="btn btn-outline-secondary" (click)="dec()">-</button>
+				<input class="form-control w-auto text-center" type="number" min="1" [(ngModel)]="qty" />
+				<button class="btn btn-outline-secondary" (click)="inc()">+</button>
+			</div>
+			<button class="btn btn-primary" (click)="addToCart()">Add to Cart</button>
+		</div>
+	</div>
+</div>

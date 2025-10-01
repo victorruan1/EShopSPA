@@ -1,0 +1,64 @@
+<div class="container py-3">
+  <h2 class="mb-3">Checkout</h2>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <h4>Order Summary</h4>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let i of items">
+          <div>
+            <div class="fw-semibold">{{ i.product.name }}</div>
+            <small class="text-muted">Qty: {{ i.quantity }}</small>
+          </div>
+          <span>${{ (i.product.price * i.quantity) | number:'1.2-2' }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>Total</strong>
+          <strong>${{ total | number:'1.2-2' }}</strong>
+        </li>
+      </ul>
+    </div>
+    <div class="col-lg-6">
+      <h4>Payment Details</h4>
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input class="form-control" formControlName="name" />
+          <div class="text-danger" *ngIf="form.controls.name.touched && form.controls.name.invalid">
+            Name is required (min 2 characters).
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Address</label>
+          <textarea class="form-control" rows="2" formControlName="address"></textarea>
+          <div class="text-danger" *ngIf="form.controls.address.touched && form.controls.address.invalid">
+            Address is required (min 5 characters).
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Card Number</label>
+          <input class="form-control" formControlName="cardNumber" placeholder="1234123412341234" />
+          <div class="text-danger" *ngIf="form.controls.cardNumber.touched && form.controls.cardNumber.invalid">
+            Enter a 16-digit card number.
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col">
+            <label class="form-label">Expiry (MM/YY)</label>
+            <input class="form-control" formControlName="expiry" placeholder="08/27" />
+            <div class="text-danger" *ngIf="form.controls.expiry.touched && form.controls.expiry.invalid">
+              Enter a valid expiry in MM/YY.
+            </div>
+          </div>
+          <div class="col">
+            <label class="form-label">CVV</label>
+            <input class="form-control" formControlName="cvv" placeholder="123" />
+            <div class="text-danger" *ngIf="form.controls.cvv.touched && form.controls.cvv.invalid">
+              Enter a 3-digit CVV.
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Complete Purchase</button>
+      </form>
+    </div>
+  </div>
+</div>

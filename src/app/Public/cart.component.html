@@ -1,0 +1,46 @@
+<div class="container py-3">
+  <h2 class="mb-3">Cart</h2>
+  <div *ngIf="items.length; else empty">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of items">
+          <td class="d-flex align-items-center gap-2">
+            <img [src]="i.product.imageUrl" [alt]="i.product.name" width="60" height="45" class="rounded" />
+            <span>{{ i.product.name }}</span>
+          </td>
+          <td>${{ i.product.price | number:'1.2-2' }}</td>
+          <td>
+            <div class="btn-group" role="group">
+              <button class="btn btn-outline-secondary" (click)="dec(i.product.id)">-</button>
+              <button class="btn btn-light" disabled>{{ i.quantity }}</button>
+              <button class="btn btn-outline-secondary" (click)="inc(i.product.id)">+</button>
+            </div>
+          </td>
+          <td>${{ (i.product.price * i.quantity) | number:'1.2-2' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" (click)="remove(i.product.id)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <h4 class="mb-0">Total: ${{ total | number:'1.2-2' }}</h4>
+      <div class="ms-auto d-flex gap-2">
+        <button class="btn btn-outline-danger" (click)="clear()">Clear Cart</button>
+        <a class="btn btn-primary" [routerLink]="'/Checkout'" [class.disabled]="!items.length" [attr.aria-disabled]="!items.length ? true : null">Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+  <ng-template #empty>
+    <p>Your cart is empty.</p>
+  </ng-template>
+</div>

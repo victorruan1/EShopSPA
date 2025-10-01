@@ -1,0 +1,53 @@
+<div class="container py-3">
+  <h2 class="mb-3">My Orders</h2>
+  <div *ngIf="orders.length; else noOrders">
+    <div class="accordion" id="ordersAccordion">
+      <div class="accordion-item" *ngFor="let o of orders; let idx = index">
+        <h2 class="accordion-header" [id]="'heading' + idx">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#collapse' + idx"
+          >
+            <div class="w-100 d-flex justify-content-between">
+              <span>
+                Order #{{ o.id }} —
+                <span
+                  [ngClass]="{
+                    'text-success': o.status === 'Completed',
+                    'text-warning': o.status === 'Pending',
+                    'text-danger': o.status === 'Cancelled'
+                  }"
+                  >{{ o.status }}</span
+                >
+              </span>
+              <span>${{ o.totalAmount | number : "1.2-2" }}</span>
+            </div>
+          </button>
+        </h2>
+        <div
+          [id]="'collapse' + idx"
+          class="accordion-collapse collapse"
+          [attr.aria-labelledby]="'heading' + idx"
+          data-bs-parent="#ordersAccordion"
+        >
+          <div class="accordion-body">
+            <ul class="list-group">
+              <li
+                class="list-group-item d-flex justify-content-between"
+                *ngFor="let it of o.items"
+              >
+                <span>{{ it.product.name }} × {{ it.quantity }}</span>
+                <span>${{ it.price * it.quantity | number : "1.2-2" }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #noOrders>
+    <p>No orders yet.</p>
+  </ng-template>
+</div>

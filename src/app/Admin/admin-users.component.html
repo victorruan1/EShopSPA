@@ -1,0 +1,30 @@
+<div class="container py-3">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Users (Admin)</h2>
+    <a class="btn btn-primary" [routerLink]="'/admin/products/new'">Add New Product</a>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{ u.id }}</td>
+        <td><input class="form-control" [(ngModel)]="u.name" /></td>
+        <td><input class="form-control" [(ngModel)]="u.email" /></td>
+        <td>
+          <select class="form-select" [(ngModel)]="u.role">
+            <option value="customer">customer</option>
+            <option value="admin">admin</option>
+          </select>
+        </td>
+        <td class="d-flex gap-2">
+          <button class="btn btn-sm btn-primary" (click)="save(u)">Save</button>
+          <button class="btn btn-sm btn-outline-danger" (click)="remove(u.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
