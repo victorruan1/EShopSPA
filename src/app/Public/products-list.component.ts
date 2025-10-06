@@ -21,9 +21,10 @@ export class ProductsListComponent implements OnInit {
   productsList: Product[] = [];
 
   ngOnInit(): void {
-    this.productService.getProducts().subscribe((products) => {
+    this.productService.products$.subscribe((products) => {
       this.productsList = products;
     });
+    this.productService.getProducts().subscribe();
   }
 
   addToCart(product: Product) {

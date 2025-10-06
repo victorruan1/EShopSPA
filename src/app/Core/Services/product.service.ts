@@ -1,37 +1,69 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Product } from '../../Shared/Models/Product';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private productsSubject = new BehaviorSubject<Product[]>(this.seed());
+  // Use dev proxy path to avoid CORS; proxy injects subscription header. In prod, point to APIM host via environment file.
+  private readonly base = '/apigw';
+  private productsSubject = new BehaviorSubject<Product[]>([]);
   products$ = this.productsSubject.asObservable();
+  constructor(private http: HttpClient) {}
 
-  constructor() {}
-
-  getProducts(): Observable<Product[]> {
-    return this.products$;
+  // GET /api/Product/GetListProducts?page=1&pageSize=20
+  getProducts(page = 1, pageSize = 20): Observable<Product[]> {
+    const url = `${this.base}/api/Product/GetListProducts`;
+    return this.http
+      .get<{ items: any[]; page: number; pageSize: number; total: number }>(
+        url,
+        { params: { page: String(page), pageSize: String(pageSize) } as any }
+      )
+      .pipe(
+        map((res) =>
+          (res.items || []).map((it) => this.mapApiItemToProduct(it))
+        ),
+        tap((list) => this.productsSubject.next(list))
+      );
   }
 
-  addProduct(p: Omit<Product, 'id'> & Partial<Pick<Product, 'id'>>) {
-    const current = this.productsSubject.value;
-    const nextId = (current.at(-1)?.id ?? 0) + 1;
-    const item: Product = { id: p.id ?? nextId, ...p } as Product;
-    this.productsSubject.next([...current, item]);
+  // POST /api/Product/Save
+  addProduct(input: {
+    name: string;
+    description: string;
+    categoryId: number;
+    price: number;
+    qty: number;
+    productImage: string;
+    sku: string;
+    active: boolean;
+    variationValueIds: any;
+  }): Observable<any> {
+    const url = `${this.base}/api/Product/Save`;
+    return this.http.post(url, input).pipe(
+      tap(() => {
+        // After saving, refresh the list
+        this.getProducts().subscribe();
+      })
+    );
   }
 
-  private seed(): Product[] {
-    return Array.from({ length: 10 }).map((_, i) => {
-      const id = i + 1;
-      return {
-        id,
-        name: `Product ${id}`,
-        price: +(Math.random() * 100 + 10).toFixed(2),
-        imageUrl: `https://picsum.photos/seed/product-${id}/200/150`,
-        active: true,
-      } as Product;
-    });
+  private mapApiItemToProduct(it: any): Product {
+    return {
+      id: it.id,
+      name: it.name,
+      price: it.price,
+      imageUrl:
+        it.productImage || 'https://via.placeholder.com/200x150?text=Product',
+      active: it.active,
+      description: it.description,
+      category: it.categoryName,
+      subCategory: it.subCategoryName,
+      variation: undefined,
+      variationValue: undefined,
+    } as Product;
   }
 }

@@ -65,18 +65,19 @@ export class AdminAddProductComponent implements OnInit {
       return;
     }
     const v = this.form.getRawValue();
-    this.productService.addProduct({
+    const payload = {
       name: v.name!,
       description: v.description!,
-      category: v.category!,
-      subCategory: v.subCategory!,
-      variation: v.variation!,
-      variationValue: v.variationValue!,
+      categoryId: 0, // TODO: map selected category to real ID once CategoryService is API-backed
       price: v.price!,
-      imageUrl: v.imageUrl!,
+      qty: 0,
+      productImage: v.imageUrl!,
+      sku: `SKU-${(v.name || 'NEW').toUpperCase().replace(/\s+/g, '-')}-${Date.now()}`,
       active: !!v.active,
-      id: undefined as any,
+      variationValueIds: [], // TODO: map variation selection to real IDs when available
+    };
+    this.productService.addProduct(payload).subscribe({
+      next: () => this.router.navigateByUrl('/admin/products'),
     });
-    this.router.navigateByUrl('/admin/products');
   }
 }

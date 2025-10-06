@@ -1,0 +1,12 @@
+{
+  "/apigw": {
+    "target": "https://apigatewayeshop.azure-api.net/product",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "info",
+    "pathRewrite": { "^/apigw": "" },
+    "headers": {
+      "Ocp-Apim-Subscription-Key": "4ef6470b0bc6463f8fb00036dedc3aaf"
+    }
+  }
+}
